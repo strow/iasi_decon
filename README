@@ -1,0 +1,24 @@
+
+iasi2airs -- translate IASI to AIRS radiances
+
+iasi_decon - deconvolve iasi channel radiances
+
+iasi_test1
+decon_test
+
+bandpass  - bandpass filter
+gaussapod - gaussian apodization
+gaussresp - gaussian response function
+
+kc2iasi - convolve kcarta to IASI channel radiances
+
+mksconv2 -- build a sparse AIRS convolution matrix
+
+rad2bt - translate radiance to brightness temperature
+seq_match -- find the matching subsequence of two sequences
+rms  -  returns RMS average of vector or matrix A
+
+
+
+
+

@@ -1,0 +1,54 @@
+#
+# airs_decon git ignore file
+#
+
+# data & misc
+*.h5
+*.dat
+*.hdf
+*.mat
+*.fig
+*.log
+*.core
+*.rtp
+
+# tex work files
+*.aux
+*.bbl
+*.blg
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.snm
+*.toc
+*.dvi
+
+# figures & docs
+*.gif
+*.png
+*.eps
+*.pdf
+*.ps
+
+# archives and packages
+*.gz
+*.tgz
+*.tar
+*.zip
+*.bz2
+
+# libs and object files
+*.a
+*.o
+*.so
+*.mexa64
+
+# backup files
+*.bak
+*~
+
+# directories
+zold
+

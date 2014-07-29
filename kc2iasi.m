@@ -1,98 +1,88 @@
 %
 % NAME
-%   kc2iasi - convolve kcarta to iasi channel radiances
+%   kc2iasi - convolve kcarta to IASI channel radiances
 %
 % SYNOPSIS
-%   [rad3, frq3] = kc2iasi(rkc, vkc)
+%   [rad2, frq2] = kc2iasi(rad1, frq1)
 %
 % INPUTS
-%   rkc     - kcarta grid radiances
-%   vkc     - frequency grid for rkc
+%   rad1    - kcarta grid radiances
+%   frq1    - frequency grid for rad1
 %
 % OUTPUTS
-%   rad3    - iasi radiances
-%   frq3    - radiance frequency grid
+%   rad2    - IASI radiances
+%   frq2    - IASI frequency grid
 %
 % DISCUSSION
-%   N    - kcarta to interferogram transform size
-%   N3   - IASI user grid half-path size, opd / dx;
-%   igm1 - N+1 pt single-sided high res igm from kcarta radiances
-%   rad3 - IASI radiances from igm1
-%   frq3 - IASI frequencies for rad3
+%   see finterp.pdf
 % 
 % HM, 17 Jul 2014
 %
 
-function [rad3, frq3] = kc2iasi(rkc, vkc)
+function [rad2, frq2] = kc2iasi(rad1, frq1)
 
 %-----------------------------------
 % set up interferometric parameters
 %-----------------------------------
 
-% kcarta params
-dvk  = 0.0025;       % kcarta dv
-Lmax = 1 / (2*dvk);  % kcarta nominal OPD
+% kcarta param
+dv1  = 0.0025;       % kcarta dv
 
 % IASI params
 v1 = 645;            % iasi band low
 v2 = 2760;           % iasi band high
 vr = 20;             % out-of-band rolloff
-dvc = 0.25;          % IASI dv
-opd = 1 / (2*dvc);   % IASI OPD
+dv2 = 0.25;          % IASI dv
 
-% check that opd divides Lmax
-% Lrat = Lmax / opd;
-% if Lrat ~= floor(Lrat)
-%   error('opd must divide Lmax')
-% end
+% get rational approx to dv1/dv2
+[m1, m2] = rat(dv1/dv2);
+if ~isclose(m1/m2, dv1/dv2, 4)
+  error('no rational approximation for dv1 / dv2')
+end
 
-% find the transform size
-% for k = 11 : 16
-%   N = 2^k * Lrat;
-%   if N * dvk >= v2, break, end
-% end            
+% get the tranform sizes
+for k = 5 : 24
+  if m2 * 2^k * dv1 >= v2, break, end
+end
+N1 = m2 * 2^k;
+N2 = m1 * 2^k;
 
-% set the transform size
-N = 1638400;
+% get (and check) dx
+dx1 = 1 / (2*dv1*N1);
+dx2 = 1 / (2*dv2*N2);
+if ~isclose(dx1, dx2)
+  error('dx1 and dx2 are different')
+end
+dx = dx1;
 
-% get Vmax and dx
-Vmax = N * dvk;
-dx = Lmax / N;
-% isequal(Vmax, 1/(2*dx))
-
-% single-sided undecimated interferogram size
-N3 = opd / dx;
-% isequal(N3, floor(N3))
-
-%--------------------------------
-% transform to channel radiances
-%--------------------------------
+%-------------------------------
+% take kcarta to IASI radiances
+%-------------------------------
 
 % set kcarta radiance passband to the user grid
-rkc = bandpass(vkc, rkc, v1, v2, vr);
+rad1 = bandpass(frq1, rad1, v1, v2, vr);
 
-% embed kcarta radiance in 0 to Vmax N+1 point grid
-frq2 = (0:N)' * dvk;
-rad2 = zeros(N+1, 1);
-ix = interp1(frq2, (1:N+1)', vkc, 'nearest');
-rad2(ix) = rkc;
+% embed kcarta radiance in a 0 to Vmax grid
+ftmp = (0:N1)' * dv1;
+rtmp = zeros(N1+1, 1);
+ix = interp1(ftmp, (1:N1+1)', frq1, 'nearest');
+rtmp(ix) = rad1;
 
-% do the N+1 point cosine transform (as a 2*N point FFT)
-igm1 = real(ifft([rad2; flipud(rad2(2:N,1))]));
-igm1 = igm1(1:N+1,1);
+% radiance to interferogram
+igm1 = real(ifft([rtmp; flipud(rtmp(2:N1,1))]));
+igm1 = igm1(1:N1+1,1);
 
 % apply the IASI apodization
-dtmp = (0:N3)' * dx;
+dtmp = (0:N2)' * dx;
 apod = gaussapod(dtmp, 2);
-igm1(1:N3+1) = igm1(1:N3+1) .* apod;
+igm1(1:N2+1) = igm1(1:N2+1) .* apod;
 
-% truncate the single-sided high res igm1 to the instrument 
-% OPD, and transform back to radiance
-rad3 = real(fft([igm1(1:N3+1,1); flipud(igm1(2:N3,1))]));
-frq3 = (0:N3)' * dvc;
+% interferogram to radiance
+rad2 = real(fft([igm1(1:N2+1,1); flipud(igm1(2:N2,1))]));
+frq2 = (0:N2)' * dv2;
 
 % return just the IASI band
-ix = interp1(frq3, (1:N3+1)', v1:dvc:v2, 'nearest');
-rad3 = rad3(ix);
-frq3 = frq3(ix);
+ix = interp1(frq2, (1:N2+1)', v1:dv2:v2, 'nearest');
+rad2 = rad2(ix);
+frq2 = frq2(ix);
 

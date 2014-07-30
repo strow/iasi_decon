@@ -14,12 +14,16 @@
 %
 % OUTPUTS
 %   arad   - simulated AIRS radiances, n x k array
-%   afrq  - AIRS channel frequencies, n-vector
+%   afrq   - AIRS channel frequencies, n-vector
 %
 % DISCUSSION
 %   iasi2airs translates IASI to AIRS radiances by deconvolving
 %   IASI to an intermediate grid and then reconvolving with the 
 %   AIRS channel response functions
+%
+%   note: the frequencies returned in afrq are from the AIRS SRF
+%   tabulation.  These are matched in mksconv2 with the supplied
+%   values (from cfreq) and returned if they are within 0.04 1/cm.
 %
 % COPYRIGHT
 %   Copyright 2012-2014, Atmospheric Spectroscopy Laboratory.  
@@ -39,7 +43,7 @@ if m ~= length(ifrq)
 end
 
 % set default deconvolution grid step
-if nargin < 4
+if nargin < 5
   dvb = 0.05;
 end
 

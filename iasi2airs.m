@@ -3,11 +3,11 @@
 %   iasi2airs -- translate IASI to AIRS radiances
 %
 % SYNOPSIS
-%   [arad, afrq] = iasi2airs(rad1, frq1, sfile, cfrq, dvb)
+%   [arad, afrq] = iasi2airs(irad, ifrq, sfile, cfrq, dvb)
 %
 % INPUTS
-%   rad1   - IASI channel radiances, m x k array
-%   frq1   - IASI channel frequencies, m-vector
+%   irad   - IASI channel radiances, m x k array
+%   ifrq   - IASI channel frequencies, m-vector
 %   sfile  - AIRS HDF4 SRF tabulation file
 %   cfrq   - desired AIRS channel frequencies
 %   dvb    - optional deconvolution grid step
@@ -44,7 +44,7 @@ end
 
 % set default deconvolution grid step
 if nargin < 5
-  dvb = 0.05;
+  dvb = 0.1;
 end
 
 % deconvolve the IASI radiances

@@ -10,11 +10,10 @@ main functions
   mksconv1    - build a sparse AIRS convolution matrix
 
 utilities
+  bandpass    - bandpass filter
   gaussapod   - gaussian apodization
   gaussresp   - gaussian response function
-  bandpass    - bandpass filter
+  isclose     - test rms(a - b) / rms(b) < eps
   rad2bt      - translate radiance to brightness temperature
   seq_match   - find the matching subsequence of two sequences
-  isclose     - test rms(a - b) / rms(b) < eps
-  rms         - norm(a(:)) / sqrt(numel(a))
 

@@ -31,7 +31,7 @@ kcdir = '/home/motteler/cris/sergio/JUNK2012/';
 flist =  dir(fullfile(kcdir, 'convolved_kcart*.mat'));
 
 % AIRS 1C channel frequencies
-cfreq = load('freq2645.txt');  
+cfreq = load('data/freq2645.txt');  
 
 % specify an AIRS SRF tabulation
 sfile = '/asl/matlab2012/srftest/srftables_m140f_withfake_mar08.hdf';
@@ -98,6 +98,7 @@ bt6 = real(rad2bt(frq6, rad6));   % IASI interp AIRS conv
 % IASI and AIRS overview
 figure(1); clf; j = 1; 
 plot(frq1, bt1(:,j), frq2, bt2(:,j), frq3, bt3(:,j), frq4, bt4(:,j))
+axis([600, 2800, 140, 320])
 legend('true IASI', 'true AIRS', 'IASI decon', 'IASI AIRS', ...
        'location', 'south')
 xlabel('wavenumber'); ylabel('brighness temp')
@@ -108,6 +109,7 @@ saveas(gcf, 'test1_fig_1', fig)
 % IASI decon AIRS conv minus true AIRS
 figure(2); clf
 plot(frq2, mean(bt4 - bt2, 2))
+axis([600, 2800, -1.0, 1.0])
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI AIRS minus true AIRS mean');
 grid on; zoom on

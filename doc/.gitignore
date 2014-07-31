@@ -1,0 +1,8 @@
+#
+# iasi_decon/doc git ignore file
+#
+
+!*.fig
+!*.png
+!*.pdf
+

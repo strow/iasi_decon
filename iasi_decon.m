@@ -36,7 +36,7 @@ end
 
 % default output frequency step
 if nargin == 2
-  dv2 = 0.05;        % outut freq step
+  dv2 = 0.1;        % outut freq step
 end
 
 % IASI params

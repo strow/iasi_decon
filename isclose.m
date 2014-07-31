@@ -5,7 +5,7 @@ if nargin == 2
   k = 1;
 end
 
-d = rms(a - b) / rms(b);
+d = rms(a(:) - b(:)) / rms(b(:));
 
 if d < eps * k
   c = 1;

@@ -3,7 +3,7 @@
 %   iasi2airs -- translate IASI to AIRS radiances
 %
 % SYNOPSIS
-%   [arad, afrq] = iasi2airs(rad1, frq1, sfile, cfreq, dvb)
+%   [arad, afrq] = iasi2airs(rad1, frq1, sfile, cfrq, dvb)
 %
 % INPUTS
 %   rad1   - IASI channel radiances, m x k array
@@ -51,7 +51,7 @@ end
 [rad2, frq2] = iasi_decon(irad, ifrq, dvb);
 
 % get the AIRS convolution matrix
-[sconv, sfrq, afrq] = mksconv2(sfile, cfrq, dvb);
+[sconv, sfrq, afrq] = mksconv1(sfile, cfrq, dvb);
 
 % reconvolve to AIRS radiances
 [ix, jx] = seq_match(sfrq, frq2);

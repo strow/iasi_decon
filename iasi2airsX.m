@@ -28,7 +28,7 @@
 %   H. Motteler, 20 July 2014
 %
 
-function [arad, afrq] = iasi2airs(irad, ifrq, sfile, cfrq, dvb)
+function [arad, afrq] = iasi2airsX(irad, ifrq, sfile, cfrq, dvb)
 
 % check that array sizes match
 ifrq = ifrq(:);
@@ -38,7 +38,7 @@ if m ~= length(ifrq)
 end
 
 % set default deconvolution grid step
-if nargin < 4
+if nargin < 5
   dvb = 0.05;
 end
 
@@ -47,7 +47,7 @@ frq2 = (ifrq(1) : dvb : ifrq(end))';
 rad2 = interp1(ifrq, irad, frq2, 'spline', 'extrap');
 
 % get the AIRS convolution matrix
-[sconv, sfrq, afrq] = mksconv2(sfile, cfrq, dvb);
+[sconv, sfrq, afrq] = mksconv1(sfile, cfrq, dvb);
 
 % reconvolve to AIRS radiances
 [ix, jx] = seq_match(sfrq, frq2);

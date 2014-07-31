@@ -15,6 +15,7 @@
 %
 % DISCUSSION
 %   see finterp.pdf
+%   note kcarta and IASI interferometric params are set here
 % 
 % HM, 17 Jul 2014
 %

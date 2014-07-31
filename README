@@ -1,24 +1,20 @@
 
-iasi2airs -- translate IASI to AIRS radiances
+user scripts
+  iasi_demo1  - user demo of iasi2airs
+  iasi_test1  - compare IASI to AIRS with true AIRS
 
-iasi_decon - deconvolve iasi channel radiances
+main functions
+  iasi2airs   - translate IASI to AIRS radiances
+  iasi_decon  - deconvolve IASI channel radiances
+  kc2iasi     - convolve kcarta to IASI channel radiances
+  mksconv1    - build a sparse AIRS convolution matrix
 
-iasi_test1
-decon_test
-
-bandpass  - bandpass filter
-gaussapod - gaussian apodization
-gaussresp - gaussian response function
-
-kc2iasi - convolve kcarta to IASI channel radiances
-
-mksconv2 -- build a sparse AIRS convolution matrix
-
-rad2bt - translate radiance to brightness temperature
-seq_match -- find the matching subsequence of two sequences
-rms  -  returns RMS average of vector or matrix A
-
-
-
-
+utilities
+  gaussapod   - gaussian apodization
+  gaussresp   - gaussian response function
+  bandpass    - bandpass filter
+  rad2bt      - translate radiance to brightness temperature
+  seq_match   - find the matching subsequence of two sequences
+  isclose     - test rms(a - b) / rms(b) < eps
+  rms         - norm(a(:)) / sqrt(numel(a))
 

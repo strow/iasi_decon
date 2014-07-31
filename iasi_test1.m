@@ -1,5 +1,5 @@
 % 
-% iasi_test1
+% iasi_test1 -- compare IASI to AIRS with true AIRS
 % 
 % reference truth: start with kcarta radiances, convolve these to 
 % AIRS channel radiances, and call the result “true AIRS”.
@@ -10,6 +10,11 @@
 % (“IASI AIRS”).  Then compare IASI AIRS vs true AIRS over the
 % set of kcarta test radiances
 %
+% comparison tests: (1) IASI deconvolution to an intermediate 
+% grid, followed by an AIRS convolution, (2) IASI interpolation 
+% to an intermediate grid, followed by an AIRS convolution, and 
+% (3) simple interpolation from IASI to AIRS
+%
 
 %-----------------
 % test parameters
@@ -17,18 +22,22 @@
 
 addpath /asl/matlib/h4tools
 
-dvb = 0.1;              % deconvolution frequency step
-fig = 'png';            % plot type
+dvb = 0.1;       % deconvolution frequency step
+dvk = 0.0025;    % kcarta frequency spacing
+fig = 'png';     % plot type
 
 % kcarta test data
 kcdir = '/home/motteler/cris/sergio/JUNK2012/';
 flist =  dir(fullfile(kcdir, 'convolved_kcart*.mat'));
 
-% get the kcarta to AIRS convolution matrix
+% AIRS 1C channel frequencies
+cfreq = load('freq2645.txt');  
+
+% specify an AIRS SRF tabulation
 sfile = '/asl/matlab2012/srftest/srftables_m140f_withfake_mar08.hdf';
-cfreq = load('freq2645.txt');  % AIRS 1C channel frequencies
-dvk = 0.0025;                  % kcarta frequency spacing
-[sconv, sfreq, tfreq] = mksconv2(sfile, cfreq, dvk);
+
+% build the AIRS convolution matrix
+[sconv, sfreq, tfreq] = mksconv1(sfile, cfreq, dvk);
 
 %-----------------------------------
 % true IASI and true AIRS radiances
@@ -57,14 +66,6 @@ fprintf(1, '\n')
 frq1 = ftmp(:);     % from kc2iasi
 frq2 = tfreq(:);    % from mksconv2
 clear d1 vkc rkc
-
-% temporary plots
-% bt1 = rad2bt(frq1, rad1);
-% bt2 = rad2bt(frq2, rad2);
-% figure(1); clf
-% plot(frq1, bt1(:, 1), frq2, bt2(:, 1)) 
-% legend('iasi', 'airs') 
-% grid on; zoom on
 
 %-------------------------------
 % convolution and interpolation
@@ -106,8 +107,7 @@ saveas(gcf, 'test1_fig_1', fig)
 
 % IASI decon AIRS conv minus true AIRS
 figure(2); clf
-[i2, i4] = seq_match(frq2, frq4);
-plot(frq2(i2), mean(bt4(i4,:) - bt2(i2,:), 2))
+plot(frq2, mean(bt4 - bt2, 2))
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI AIRS minus true AIRS mean');
 grid on; zoom on
@@ -123,8 +123,7 @@ saveas(gcf, 'test1_fig_3', fig)
 
 % IASI interp AIRS conv minus true AIRS 
 figure(4); clf
-[j2, j6] = seq_match(frq2, frq6);
-plot(frq2(j2), mean(bt6(j6,:) - bt2(j2,:), 2))
+plot(frq2, mean(bt6 - bt2, 2))
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI interp AIRS conv  minus true AIRS mean');
 grid on; zoom on

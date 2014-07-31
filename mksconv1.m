@@ -1,9 +1,9 @@
 %
 % NAME
-%   mksconv2 -- build a sparse AIRS convolution matrix
+%   mksconv1 -- build a sparse AIRS convolution matrix
 %
 % SYNOPSIS
-%   [sconv, sfreq, tfreq] = mksconv2(sfile, cfreq, dvs)
+%   [sconv, sfreq, tfreq] = mksconv1(sfile, cfreq, dvs)
 %
 % INPUTS
 %   sfile  - AIRS HDF SRF tabulation file
@@ -16,23 +16,21 @@
 %   tfreq  - m-vector, sconv row frequency grid
 % 
 % DESCRIPTION
-%   mksconv2 takes a vector of AIRS channel frequencies and returns
+%   mksconv1 takes a vector of AIRS channel frequencies and returns
 %   an m x n sparse convolution matrix.  sfreq is chosen internally
-%   to span the SRFs of the requested channels.  if r is radiances
-%   at the sfreq grid, then c = sconv * r is channel radiances.
+%   to span the SRFs of the requested channels.  If r is radiances
+%   at the sfreq grid, then c = sconv * r is AIRS channel radiances.
 %
-%   cfreq is desired channels and tfreq corresponding frequencies of
-%   the tabulated SRFs.  These are sorted and the closest pairs are
-%   matched, if the difference is less than 0.04 1/cm.  tfreq may be
-%   shorter than cfreq if there is no match for some channels.
-%
-%   mksconv2 calls seq_match and the 2008 version of h4sdread.
+%   cfreq is desired channel frequencies and tfreq is corresponding
+%   frequencies of the tabulated SRFs.  If these differ anywhere by
+%   more than 0.02 1/cm, a warning is given.  mksconv1 does not sort
+%   the output channels by frequency.
 %
 % AUTHOR
 %   H. Motteler, 20 June 2013
 %
 
-function [sconv, sfreq, tfreq] = mksconv2(sfile, cfreq, dvs)
+function [sconv, sfreq, tfreq] = mksconv1(sfile, cfreq, dvs)
 
 % default to a 0.0025 1/cm input grid
 if nargin < 3
@@ -53,12 +51,14 @@ for i = 1 : length(alist)
 end
 clear alist fattr
 
-% sort and match channel sets
-cfreq = sort(cfreq(:));
-[fsrt, isrt] = sort(tfreq);
-[ci, fi] = seq_match(cfreq, fsrt, 0.04);
-ix = isrt(fi);
-% isequal(fsrt(fi), tfreq(ix))
+% match channel sets
+tfreq = tfreq(:);
+cfreq = cfreq(:);
+ix = interp1(tfreq, (1:length(tfreq))', cfreq, 'nearest');
+vdif = max(abs(tfreq(ix) - cfreq));
+if vdif > 0.02
+  fprintf(1, 'mksconv1: warning, max(abs(tfreq - cfreq)) = %g\n', vdif)
+end
 
 % trim tabulated SRF data to common channels
 tfreq = tfreq(ix);

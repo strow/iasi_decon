@@ -1,6 +1,6 @@
 %
 % NAME
-%   iasi_decon - deconvolve iasi channel radiances
+%   iasi_decon - deconvolve IASI channel radiances
 %
 % SYNOPSIS
 %   [rad2, frq2] = iasi_decon(rad1, frq1, dv2)
@@ -15,7 +15,8 @@
 %   frq2   - deconvolution frequency grid, k-vector
 %
 % DISCUSSION
-%   see finterp.pdf
+%   see doc/finterp.pdf for the basics
+%   note IASI interferometric params are set here
 %
 % HM, 17 Jul 2014
 %
@@ -41,7 +42,6 @@ end
 % IASI params
 v1 = 645;            % iasi band low
 v2 = 2760;           % iasi band high
-vr = 20;             % out-of-band rolloff
 dv1 = 0.25;          % IASI dv
 
 % get rational approx to dv1/dv2

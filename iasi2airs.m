@@ -21,9 +21,10 @@
 %   IASI to an intermediate grid and then reconvolving with the 
 %   AIRS channel response functions
 %
-%   note: the frequencies returned in afrq are from the AIRS SRF
-%   tabulation.  These are matched in mksconv2 with the supplied
-%   values (from cfreq) and returned if they are within 0.04 1/cm.
+%   cfrq is desired channel frequencies and afrq is nominal center
+%   frequencies of the tabulated SRFs.  If these differ by more than
+%   0.02 1/cm, a warning is given.  iasi2airs does not sort afrq by
+%   frequency.
 %
 % COPYRIGHT
 %   Copyright 2012-2014, Atmospheric Spectroscopy Laboratory.  

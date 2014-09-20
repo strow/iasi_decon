@@ -21,10 +21,10 @@
 %   to span the SRFs of the requested channels.  If r is radiances
 %   at the sfreq grid, then c = sconv * r is AIRS channel radiances.
 %
-%   cfreq is desired channel frequencies and tfreq is corresponding
-%   frequencies of the tabulated SRFs.  If these differ anywhere by
-%   more than 0.02 1/cm, a warning is given.  mksconv1 does not sort
-%   the output channels by frequency.
+%   cfreq is desired channel frequencies and tfreq is nominal center
+%   frequencies of the tabulated SRFs.  If these differ by more than
+%   0.02 1/cm, a warning is given.  mksconv1 does not sort tfreq by
+%   frequency.
 %
 % AUTHOR
 %   H. Motteler, 20 June 2013

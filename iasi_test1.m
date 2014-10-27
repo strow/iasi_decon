@@ -104,7 +104,7 @@ legend('true IASI', 'true AIRS', 'IASI decon', 'IASI AIRS', ...
 xlabel('wavenumber'); ylabel('brighness temp')
 title(sprintf('IASI and AIRS profile %d', j));
 grid on; zoom on
-saveas(gcf, 'test1_fig_1', fig)
+% saveas(gcf, 'test1_fig_1', fig)
 
 % IASI decon AIRS conv minus true AIRS
 figure(2); clf
@@ -113,7 +113,7 @@ axis([600, 2800, -1.0, 1.0])
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI AIRS minus true AIRS mean');
 grid on; zoom on
-saveas(gcf, 'test1_fig_2', fig)
+% saveas(gcf, 'test1_fig_2', fig)
 
 % IASI interp to AIRS minus true AIRS
 figure(3); clf
@@ -121,7 +121,7 @@ plot(frq2, mean(bt5 - bt2, 2))
 xlabel('wavenumber'); ylabel('dBT')
 title('interpolated AIRS minus true AIRS mean');
 grid on; zoom on
-saveas(gcf, 'test1_fig_3', fig)
+% saveas(gcf, 'test1_fig_3', fig)
 
 % IASI interp AIRS conv minus true AIRS 
 figure(4); clf
@@ -129,5 +129,5 @@ plot(frq2, mean(bt6 - bt2, 2))
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI interp AIRS conv  minus true AIRS mean');
 grid on; zoom on
-saveas(gcf, 'test1_fig_4', fig)
+% saveas(gcf, 'test1_fig_4', fig)
 

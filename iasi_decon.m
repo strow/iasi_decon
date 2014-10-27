@@ -8,15 +8,22 @@
 % INPUTS
 %   rad1   - IASI channel radiances, m x n array
 %   frq1   - IASI channel frequencies, m-vector
-%   dv2    - optional deconvolution frequency step
+%   dv2    - optional deconvolution grid step, default 0.1 1/cm
 %
 % OUTPUTS
 %   rad2   - deconvolved radiances, k x n array
 %   frq2   - deconvolution frequency grid, k-vector
 %
 % DISCUSSION
-%   see doc/finterp.pdf for the basics
-%   note IASI interferometric params are set here
+%   see doc/finterp.pdf for the derivations used here.
+%
+%   iasi_decon calls isclose.m from airs_decon/test, bandpass.m 
+%   from ccast/source, and gaussapod.m from /asl/matlib/fconv
+%
+%   iasi_decon and kc2iasi are similar, but kc2iasi convolves 
+%   kcarta radiance to iasi channels while iasi_decon deconvolves
+%   iasi channel radiances to an intermediate grid, typically at 
+%   a 0.1 1/cm spacing.
 %
 % HM, 17 Jul 2014
 %
@@ -42,17 +49,19 @@ end
 % IASI params
 v1 = 645;            % iasi band low
 v2 = 2760;           % iasi band high
+vr = 20;             % out-of-band rolloff
+vb = v2 + vr;        % transform max
 dv1 = 0.25;          % IASI dv
 
 % get rational approx to dv1/dv2
 [m1, m2] = rat(dv1/dv2);
-if ~isclose(m1/m2, dv1/dv2)
+if ~isclose(m1/m2, dv1/dv2, 4)
   error('no rational approximation for dv1 / dv2')
 end
 
 % get the tranform sizes
-for k = 5 : 24
-  if m2 * 2^k * dv1 >= v2, break, end
+for k = 4 : 24
+  if m2 * 2^k * dv1 >= vb, break, end
 end
 N1 = m2 * 2^k;
 N2 = m1 * 2^k;
@@ -60,20 +69,25 @@ N2 = m1 * 2^k;
 % get (and check) dx
 dx1 = 1 / (2*dv1*N1);
 dx2 = 1 / (2*dv2*N2);
-if ~isclose(dx1, dx2)
+if ~isclose(dx1, dx2, 4)
   error('dx1 and dx2 are different')
 end
 dx = dx1;
+
+% fprintf(1, 'iasi_decon: N1 = %7d, N2 = %5d, dx = %6.3e\n', N1, N2, dx);
 
 %-------------------------------
 % deconvolve the IASI radiances
 %-------------------------------
 
+% add a 5 cm-1 in-band rolloff at band edges
+rad1 = bandpass(frq1, rad1, v1+5, v2-5, 5);
+
 % embed IASI radiances in a 0 to Vmax grid
 ftmp = (0:N1)' * dv1;
 rtmp = zeros(N1+1, nobs);
-ix = interp1(ftmp, (1:N1+1)', frq1, 'nearest');
-rtmp(ix, :) = rad1;
+[ix, jx] = seq_match(ftmp, frq1);
+rtmp(ix, :) = rad1(jx, :);
 
 % radiance to interferogram
 igm1 = real(ifft([rtmp; flipud(rtmp(2:N1, :))]));
@@ -93,7 +107,7 @@ rad2 = real(fft([igm2(1:N2+1,:); flipud(igm2(2:N2,:))]));
 frq2 = (0:N2)' * dv2;
 
 % return just the IASI band
-ix = interp1(frq2, (1:N2+1)', v1:dv2:v2, 'nearest');
+ix = find(v1 <= frq2 & frq2 <= v2);
 rad2 = rad2(ix, :);
 frq2 = frq2(ix);
 

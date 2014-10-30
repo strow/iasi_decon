@@ -49,10 +49,7 @@ if nargin < 5
 end
 
 % deconvolve the IASI radiances
-v1 = 645;            % iasi band low
-v2 = 2760;           % iasi band high
-rtmp = bandpass(ifrq, irad, v1+5, v2-5, 5);
-[rad2, frq2] = iasi_decon(rtmp, ifrq, dvb);
+[rad2, frq2] = iasi_decon(irad, ifrq, dvb);
 
 % get the AIRS convolution matrix
 [sconv, sfrq, afrq] = mksconv1(sfile, cfrq, dvb);

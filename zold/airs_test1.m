@@ -1,5 +1,5 @@
 % 
-% iasi_test1 -- compare IASI to AIRS with true AIRS
+% airs_test1 -- compare IASI to AIRS with true AIRS
 % 
 % reference truth: start with kcarta radiances, convolve these to 
 % AIRS channel radiances, and call the result “true AIRS”.
@@ -78,10 +78,10 @@ clear d1 vkc rkc
 [rad4, frq4] = iasi2airs(rad1, frq1, sfile, cfreq, dvb);
 
 % IASI direct interpolation to AIRS
-rad5 = interp1(frq1, rad1, frq2, 'spline', 'extrap');
+% rad5 = interp1(frq1, rad1, frq2, 'spline', 'extrap');
 
 % IASI to AIRS via interpolaton and AIRS convolution
-[rad6, frq6] = iasi2airsX(rad1, frq1, sfile, cfreq, dvb);
+% [rad6, frq6] = iasi2airsX(rad1, frq1, sfile, cfreq, dvb);
 
 %-----------------
 % stats and plots
@@ -92,8 +92,8 @@ bt1 = real(rad2bt(frq1, rad1));   % true IASI
 bt2 = real(rad2bt(frq2, rad2));   % true AIRS
 bt3 = real(rad2bt(frq3, rad3));   % deconvolved IASI
 bt4 = real(rad2bt(frq4, rad4));   % IASI decon AIRS conv
-bt5 = real(rad2bt(frq2, rad5));   % IASI interp to AIRS
-bt6 = real(rad2bt(frq6, rad6));   % IASI interp AIRS conv
+% bt5 = real(rad2bt(frq2, rad5));   % IASI interp to AIRS
+% bt6 = real(rad2bt(frq6, rad6));   % IASI interp AIRS conv
 
 % IASI and AIRS overview
 figure(1); clf; j = 1; 
@@ -116,18 +116,18 @@ grid on; zoom on
 % saveas(gcf, 'test1_fig_2', fig)
 
 % IASI interp to AIRS minus true AIRS
-figure(3); clf
-plot(frq2, mean(bt5 - bt2, 2))
-xlabel('wavenumber'); ylabel('dBT')
-title('interpolated AIRS minus true AIRS mean');
-grid on; zoom on
+% figure(3); clf
+% plot(frq2, mean(bt5 - bt2, 2))
+% xlabel('wavenumber'); ylabel('dBT')
+% title('interpolated AIRS minus true AIRS mean');
+% grid on; zoom on
 % saveas(gcf, 'test1_fig_3', fig)
 
 % IASI interp AIRS conv minus true AIRS 
-figure(4); clf
-plot(frq2, mean(bt6 - bt2, 2))
-xlabel('wavenumber'); ylabel('dBT')
-title('IASI interp AIRS conv  minus true AIRS mean');
-grid on; zoom on
+% figure(4); clf
+% plot(frq2, mean(bt6 - bt2, 2))
+% xlabel('wavenumber'); ylabel('dBT')
+% title('IASI interp AIRS conv  minus true AIRS mean');
+% grid on; zoom on
 % saveas(gcf, 'test1_fig_4', fig)
 

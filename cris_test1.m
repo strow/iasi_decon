@@ -83,8 +83,6 @@ bt4 = real(rad2bt(frq4, rad4));   % IASI CrIS
 [i2, i4] = seq_match(frq2, frq4); 
 pv1 = min(frq2(i2)) - 10; 
 pv2 = max(frq2(i2)) + 10;
-if hapod,  psf = 0.04; app = 'hamm';
-else psf = 0.5; app = 'noap'; end
 
 % IASI and CrIS spectra
 figure(1); clf; j = 1; 
@@ -95,14 +93,14 @@ legend('true IASI', 'true CrIS', 'IASI CrIS', ...
 xlabel('wavenumber'); ylabel('brighness temp')
 title(sprintf('IASI and CrIS %s profile %d', band, j));
 grid on; zoom on
-% saveas(gcf, sprintf('iasi_cris_spec_%s_%s', band, app), 'png')
+% saveas(gcf, sprintf('iasi_cris_spec_%s', band), 'png')
 
 % IASI CrIS minus true CrIS mean
 figure(2); clf
 subplot(2,1,1)
 [i2, i4] = seq_match(frq2, frq4);
 plot(frq2(i2), mean(bt4(i4,:) - bt2(i2,:), 2))
-ax(1)=pv1; ax(2)=pv2; ax(3)=-psf; ax(4)=psf; axis(ax);
+ax = axis; ax(1)=pv1; ax(2)=pv2; axis(ax);
 xlabel('wavenumber'); ylabel('dBT')
 title(sprintf('IASI CrIS minus true CrIS %s mean', band));
 grid on; zoom on
@@ -110,9 +108,9 @@ grid on; zoom on
 % IASI CrIS minus true CrIS std
 subplot(2,1,2)
 plot(frq2(i2), std(bt4(i4,:) - bt2(i2,:), 0, 2))
-ax(1)=pv1; ax(2)=pv2; ax(3)=0; ax(4)=psf/2; axis(ax);
+ax = axis; ax(1)=pv1; ax(2)=pv2; axis(ax);
 xlabel('wavenumber'); ylabel('dBT')
 title(sprintf('IASI CrIS minus true CrIS %s std', band));
 grid on; zoom on
-% saveas(gcf, sprintf('iasi_cris_diff_%s_%s', band, app), 'png')
+% saveas(gcf, sprintf('iasi_cris_diff_%s', band), 'png')
 

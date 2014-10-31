@@ -78,7 +78,7 @@ for bi = 1 : 3
   rtmp = rad1(ix, :); 
 
   % apply the bandpass filter
-  rtmp = bandpass(ftmp, rtmp, tv1, tv2, tvr);
+  rtmp = bandpass(ftmp, rtmp, user.v1, user.v2, tvr);
 
   % convolve to the CrIS user grid
   [rtmp, ftmp] = iasi_decon(rtmp, ftmp, user.dv, opt1);

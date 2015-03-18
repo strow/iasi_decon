@@ -3,12 +3,11 @@
 %   kc2iasi - convolve kcarta to IASI channel radiances
 %
 % SYNOPSIS
-%   [rad2, frq2] = kc2iasi(rad1, frq1, ngc)
+%   [rad2, frq2] = kc2iasi(rad1, frq1)
 %
 % INPUTS
 %   rad1  - kcarta radiances, m x n array
 %   frq1  - kcarta frequencies, m-vector
-%   ngc   - number of guard channels (default 0)
 %
 % OUTPUTS
 %   rad2  - IASI radiances, k x n array
@@ -30,10 +29,7 @@
 % HM, 22 Oct 2014
 %
 
-function [rad2, frq2] = kc2iasi(rad1, frq1, ngc)
-
-% default is no guard channels
-if nargin == 2, ngc = 0; end
+function [rad2, frq2] = kc2iasi(rad1, frq1)
 
 % check that array sizes match
 frq1 = frq1(:);
@@ -110,9 +106,8 @@ igm1(1:N2+1, :) = igm1(1:N2+1, :) .* apod;
 rad2 = real(fft([igm1(1:N2+1,:); flipud(igm1(2:N2,:))]));
 frq2 = (0:N2)' * dv2;
 
-% return the IASI band plus any guard channels
-dg = ngc * dv2;
-ix = find(v1 - dg <= frq2 & frq2 <= v2 + dg);
+% return just the IASI band
+ix = find(v1 <= frq2 & frq2 <= v2);
 rad2 = rad2(ix, :);
 frq2 = frq2(ix);
 

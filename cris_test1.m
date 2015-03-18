@@ -13,9 +13,9 @@
 % test parameters
 %-----------------
 
-addpath /home/motteler/cris/ccast/source
-addpath /home/motteler/cris/airs_decon/test
-addpath /home/motteler/cris/airs_decon/source
+addpath /asl/packages/ccast/source
+addpath /asl/packages/airs_decon/test
+addpath /asl/packages/airs_decon/source
 
 % test params
 band = 'LW';

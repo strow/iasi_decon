@@ -26,7 +26,7 @@
 %   deapodization steps.  calls gaussapod.m
 %
 % HM, 20 Sep 2014
-% LLS, 20 Mar 2013  Loop on obs during zero filling to save memory
+%
 
 function [rad2, frq2] = iasi_decon(rad1, frq1, dv2, opt)
 
@@ -82,38 +82,34 @@ end
 %----------------------
 
 % embed rad1 in a 0 to Vmax grid
-for i = 1:nobs
-
-   ftmp = (0:N1)' * dv1;
-   rtmp = zeros(N1+1, 1);
-   ix = interp1(ftmp, (1:N1+1)', frq1, 'nearest');
-   rtmp(ix) = rad1;
+ftmp = (0:N1)' * dv1;
+rtmp = zeros(N1+1, nobs);
+ix = interp1(ftmp, (1:N1+1)', frq1, 'nearest');
+rtmp(ix, :) = rad1;
 
 % take radiance to interferograms
-   igm1 = ifft([rtmp; flipud(rtmp(2:N1, :))]);
-   igm1 = igm1(1:N1+1);
-   clear rtmp
+igm1 = ifft([rtmp; flipud(rtmp(2:N1, :))]);
+igm1 = igm1(1:N1+1, :);
+clear rtmp
 
 % apply the inverse IASI apodization
-   dtmp = (0:N1)' * dx;
-   apod = gaussapod(dtmp, 2);
-   igm1 = igm1 ./ apod;
+dtmp = (0:N1)' * dx;
+apod = gaussapod(dtmp, 2) * ones(1, nobs);
+igm1 = igm1 ./ apod;
 
 % extend or truncate igm1 to igm2
-   igm2 = zeros(N2+1, 1);
-   k = min(N1+1, N2+1);
-   igm2(1:k) = igm1(1:k);
-   clear igm1
+igm2 = zeros(N2+1, nobs);
+k = min(N1+1, N2+1);
+igm2(1:k, :) = igm1(1:k, :);
+clear igm1
 
 % take interferograms to radiance
-   rad2 = fft([igm2(1:N2+1); flipud(igm2(2:N2))]);
-   frq2 = (0:N2)' * dv2;
-   clear igm2
+rad2 = fft([igm2(1:N2+1,:); flipud(igm2(2:N2,:))]);
+frq2 = (0:N2)' * dv2;
+clear igm2
 
 % return just the input band
-   ix = find(v1 <= frq2 & frq2 <= v2);
-   rad2(i,:) = rad2(ix)
-   frq2 = frq2(ix);
-
-end
+ix = find(v1 <= frq2 & frq2 <= v2);
+rad2 = rad2(ix, :);
+frq2 = frq2(ix);
 

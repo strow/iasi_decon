@@ -48,18 +48,28 @@ if nargin < 5
   dvb = 0.1;
 end
 
-% deconvolve the IASI radiances
-v1 = 645;            % iasi band low
-v2 = 2760;           % iasi band high
-rtmp = bandpass(ifrq, irad, v1+5, v2-5, 5);
-[rad2, frq2] = iasi_decon(rtmp, ifrq, dvb);
-
 % get the AIRS convolution matrix
 [sconv, sfrq, afrq] = mksconv1(sfile, cfrq, dvb);
 
-% reconvolve to AIRS radiances
-[ix, jx] = seq_match(sfrq, frq2);
-rtmp = zeros(length(sfrq), nobs);
-rtmp(ix, :) = rad2(jx, :);
-arad = sconv * rtmp;
+% set IASI filter parameters
+v1 = 645;            % iasi band low
+v2 = 2760;           % iasi band high
+
+% initialize the ouput array
+arad = zeros(length(afrq), nobs);
+
+% loop on obs
+for i = 1 : nobs
+
+  % deconvolve the IASI radiances
+  rtmp = double(irad(:, i));
+  rtmp = bandpass(ifrq, rtmp, v1+5, v2-5, 5);
+  [rad2, frq2] = iasi_decon(rtmp, ifrq, dvb);
+
+  % reconvolve to AIRS radiances
+  [ix, jx] = seq_match(sfrq, frq2);
+  rtmp(ix) = rad2(jx);
+  arad(:, i) = sconv * rtmp;
+
+end
 

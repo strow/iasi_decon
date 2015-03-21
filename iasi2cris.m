@@ -13,6 +13,7 @@
 % opt1 fields
 %   hapod    - 0 = no apod (default), 1 = Hamming
 %   resmode  - 'lowres' (default), 'hires1', or 'hires2'
+%   nguard   - number of guard channels, default is 0
 %
 % OUTPUTS
 %   crad   - simulated CrIS radiances, n x k array
@@ -34,15 +35,13 @@
 function [crad, cfrq] = iasi2cris(rad1, frq1, opt1)
 
 % defaults
-tol = 1e-6;     % default accuracy
-info = 0;       % print finterp params
 hapod = 0;      % no Hamming apodization
+nguard = 0;     % no guard channels
 
 % process input options
 if nargin == 3
-  if isfield(opt1, 'tol'), tol = opt1.tol; end
-  if isfield(opt1, 'info'), info = opt1.info; end
   if isfield(opt1, 'hapod'), hapod = opt1.hapod; end
+  if isfield(opt1, 'nguard'), nguard = opt1.nguard; end
 end
 
 % IASI params
@@ -89,10 +88,11 @@ for bi = 1 : 3
     rtmp = hamm_app(rtmp);
   end
 
-  % trim convolved data to the CrIS user grid
-  ix = find(user.v1 <= ftmp & ftmp <= user.v2);
-  ftmp = ftmp(ix);
+  % return the CrIS user grid plus any guard channels
+  dg = nguard * user.dv;
+  ix = find(user.v1 - dg <= ftmp & ftmp <= user.v2 + dg);
   rtmp = rtmp(ix, :);
+  ftmp = ftmp(ix);
 
   % concatenate output columns
   crad = [crad; rtmp];

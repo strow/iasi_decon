@@ -1,5 +1,5 @@
 % 
-% airs_test2 -- compare IASI AIRS with true AIRS
+% airs_test1 -- compare IASI AIRS with true AIRS
 % 
 % reference truth: start with kcarta radiances, convolve these 
 % to AIRS channel radiances, and call the result "true AIRS".
@@ -95,6 +95,7 @@ grid on; zoom on
 
 % IASI AIRS minus true AIRS mean
 figure(2); clf
+subplot(2,1,1)
 plot(frq2, mean(bt4 - bt2, 2))
 axis([600, 2800, -0.3, 0.3])
 xlabel('wavenumber'); ylabel('dBT')
@@ -102,7 +103,7 @@ title('IASI AIRS minus true AIRS mean');
 grid on; zoom on
 
 % IASI AIRS minus true AIRS std
-figure(3); clf
+subplot(2,1,2)
 plot(frq2, std(bt4 - bt2, 0, 2))
 axis([600, 2800, -0.2, 0.2])
 xlabel('wavenumber'); ylabel('dBT')

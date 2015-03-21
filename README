@@ -1,13 +1,18 @@
 
 user scripts
-  iasi_demo1  - user demo of iasi2airs
-  iasi_test1  - compare IASI to AIRS with true AIRS
+  airs_demo1  - IASI to AIRS translation demo
+  cris_demo1  - IASI to CrIS translation demo
 
-main functions
+user functions
   iasi2airs   - translate IASI to AIRS radiances
+  iasi2cris   - translate IASI to CrIS radiances
   iasi_decon  - deconvolve IASI channel radiances
-  kc2iasi     - convolve kcarta to IASI channel radiances
   mksconv1    - build a sparse AIRS convolution matrix
+  kc2iasi     - convolve kcarta to IASI channel radiances
+
+validation scripts
+  cris_test1  - compare IASI CrIS with true CrIS
+  airs_test1  - compare IASI AIRS with true AIRS
 
 utilities
   bandpass    - bandpass filter
@@ -16,4 +21,5 @@ utilities
   isclose     - test rms(a - b) / rms(b) < eps
   rad2bt      - translate radiance to brightness temperature
   seq_match   - find the matching subsequence of two sequences
+  iasi_params - returns a struct of IASI user grid params
 

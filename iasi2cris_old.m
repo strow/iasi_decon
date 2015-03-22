@@ -80,15 +80,8 @@ for bi = 1 : 3
   rtmp = bandpass(ftmp, rtmp, user.v1, user.v2, tvr);
 
   % convolve to the CrIS user grid
-  [m, n] = size(rtmp);
-  [r1, f1] = iasi_decon(rtmp(:, 1), ftmp, user.dv, opt1);
-  r2 = zeros(length(f1), n);
-  r2(:, 1) = r1;
-  for j = 2 : n
-    [r1, f1] = iasi_decon(rtmp(:, j), ftmp, user.dv, opt1);
-    r2(:, j) = r1;
-  end
-  ftmp = f1; rtmp = r2; clear r2
+  [rtmp, ftmp] = iasi_decon(rtmp, ftmp, user.dv, opt1);
+  ftmp = ftmp(:);
 
   % option for hamming apodization
   if hapod

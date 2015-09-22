@@ -1,74 +1,71 @@
 %
 % NAME
-%   bandpass  -- bandpass filter
+%   bandpass  -- bandpass filter with raised cosine wings
 %
 % SYNOPSIS
-%   function dout = bandpass(vin, din, v1, v2, vr);
+%   function b = bandpass(v, d, v1, v2, r1, r2);
 %
 % INPUTS
-%   vin   - input frequency grid, m-vector
-%   din   - input data, m x n array, column order
-%   v1    - passband start
-%   v2    - passband end
-%   vr    - optional rolloff width
+%   v   - frequency grid, m-vector
+%   d   - input data, m x n array
+%   v1  - passband start frequency
+%   v2  - passband end frequency
+%   r1  - optional LHS rolloff
+%   r2  - optional RHS rolloff 
 %
 % OUTPUT
-%   dout  - din rolled off outside of [v1, v2]
+%   b   - d filtered, m x n array
 %
 % NOTES
-%   the rolloff is a cosine, fit to the rolloff width
+%   if r1 is not specified the value is set to 10
+%   if r2 is not specifed the value for r1 is used
 %
-%   if the rolloff width vr is not specified, the rolloff is from
-%   vin(1) to v1 and from v2 to vin(end).  If vr is specified and
-%   v1 - vr < vin(1), then vin(1) is the low end of the rolloff,
-%   similarly if vin(end) < v2 + vr then vin(end) is the high end.
-%
-%   the passband is taken as the smallest interval at the vin grid
-%   points that spans [v1, v2].  
+%   this function differs from earlier versions in that it allows
+%   for the separate specification of the LHS and RHS wings, and in
+%   that the passband and wings are purely functions of frequency
+%   rather than being adjusted to fall on grid points spanning the
+%   passband.
 %
 % AUTHOR
-%    H. Motteler, 20 Apr 2012
+%    H. Motteler, 15 Jun 2015
 %
 
-function dout = bandpass(vin, din, v1, v2, vr)
+function b = bandpass(v, d, v1, v2, r1, r2)
 
-% make vin a column vector
-vin = vin(:);
+% make v a column vector
+v = v(:);
 
-% check that inputs vin and din conform
-[m, n] = size(din);
-if length(vin) ~= m
-  error('vin length and din rows differ')
+% check that v and d conform
+[m, n] = size(d);
+if length(v) ~= m
+  error('v and d do not conform')
 end
 
-% set vr default value
-if nargin < 5
-  vr = vin(m);
+% set rolloff defaults
+if nargin == 4
+  r1 = 10;
+  r2 = 10;
+elseif nargin == 5
+  r2 = r1;
 end
 
-% get passband indices in vin
-j1 = max(find(vin <= v1));
-j2 = min(find(v2 <= vin));
+% quietly fix long r1 or r2
+vL = max(v(1), v1 - r1);
+vH = min(v2 + r2, v(end));
 
-% get indices for filter wings 
-k1 = max([find(vin <= v1 - vr); 1]);
-k2 = min([find(v2 + vr <= vin); m]);
-
-% get sizes of each segment
-n1 = j1 - k1;      % points in LHS rolloff
-n2 = k2 - j2;      % points in RHS rolloff
-n3 = j2 - j1 + 1;  % points in passband
-
-% scale cosine for the rolloffs
-f1 = (1+cos(pi+(0:n1-1)*pi/n1))/2;
-f2 = (1+cos((1:n2)*pi/n2))/2;
+% partition indices
+c2 = vL <= v & v < v1;
+c3 = v1 <= v & v < v2;
+c4 = v2 <= v & v < vH;
 
 % build the filter
-filt = zeros(m, 1);
-filt(k1:k2, 1) = [f1, ones(1,n3), f2]';
+f = zeros(m, 1);
+f(c2) = (1 + cos(-pi * (v1 - v(c2)) / (v1 - vL))) / 2;
+f(c3) = 1;
+f(c4) = (1 + cos( pi * (v2 - v(c4)) / (v2 - vH))) / 2;
 
 % apply the filter
 for i = 1 : n
-  dout(:,i) = din(:,i) .* filt;
+  b(:,i) = d(:,i) .* f;
 end
 

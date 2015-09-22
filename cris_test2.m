@@ -4,7 +4,7 @@
 
 % set paths to asl libs
 addpath /asl/packages/ccast/source
-addpath /asl/packages/iasi_decon
+addpath /asl/packages/airs_decon/source
 
 % get IASI user-grid parameters
 iasi = iasi_params;
@@ -18,8 +18,8 @@ clear d1
 
 % translation options
 opt1 = struct;
-opt1.hapod = 0;     
-opt1.nguard = 2;
+opt1.hapod = 1;     
+opt1.nguard = 4;
 opt1.resmode = 'hires2';
 
 % do the new translation

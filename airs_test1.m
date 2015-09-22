@@ -85,6 +85,7 @@ bt4 = real(rad2bt(frq4, rad4));   % IASI decon AIRS conv
 
 % IASI and AIRS spectra
 figure(1); clf; j = 1; 
+set(gcf, 'Units','centimeters', 'Position', [4, 10, 24, 16])
 plot(frq1, bt1(:,j), frq2, bt2(:,j), frq3, bt3(:,j), frq4, bt4(:,j))
 axis([600, 2800, 140, 320])
 legend('true IASI', 'true AIRS', 'IASI decon', 'IASI AIRS', ...
@@ -92,9 +93,11 @@ legend('true IASI', 'true AIRS', 'IASI decon', 'IASI AIRS', ...
 xlabel('wavenumber'); ylabel('brighness temp')
 title(sprintf('IASI and AIRS profile %d', j));
 grid on; zoom on
+saveas(gcf, 'iasi2airs_1', 'png')
 
 % IASI AIRS minus true AIRS mean
 figure(2); clf
+set(gcf, 'Units','centimeters', 'Position', [4, 10, 24, 16])
 subplot(2,1,1)
 plot(frq2, mean(bt4 - bt2, 2))
 axis([600, 2800, -0.3, 0.3])
@@ -105,8 +108,9 @@ grid on; zoom on
 % IASI AIRS minus true AIRS std
 subplot(2,1,2)
 plot(frq2, std(bt4 - bt2, 0, 2))
-axis([600, 2800, -0.2, 0.2])
+axis([600, 2800, 0, 0.2])
 xlabel('wavenumber'); ylabel('dBT')
 title('IASI AIRS minus true AIRS std');
 grid on; zoom on
+saveas(gcf, 'iasi2airs_2', 'png')
 

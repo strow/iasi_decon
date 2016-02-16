@@ -53,3 +53,7 @@
 zold
 data
 figures
+
+# allow pdf overview
+!decon.pdf
+

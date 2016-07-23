@@ -13,6 +13,7 @@ user functions
 validation scripts
   cris_test1  - compare IASI CrIS with true CrIS
   airs_test1  - compare IASI AIRS with true AIRS
+  nedn_test1  - noise estimate for the IASI to CrIS translation
 
 utilities
   bandpass    - bandpass filter

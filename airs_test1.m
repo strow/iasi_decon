@@ -15,6 +15,7 @@
 %-----------------
 
 addpath /asl/matlib/h4tools
+warning('off', 'MATLAB:imagesci:hdf:removalWarningHDFSD')
 
 dvb = 0.1;       % deconvolution frequency step
 dvk = 0.0025;    % kcarta frequency spacing

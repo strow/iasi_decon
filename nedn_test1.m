@@ -3,10 +3,11 @@
 %
 
 addpath /asl/packages/ccast/source
+addpath /asl/packages/airs_decon/source
 
 % get a sample ccast CrIS NEdN estimate
 d = load('/asl/data/cris/ccast/sdr60_hr/2016/018/SDR_d20160118_t0801033.mat');
-nedn_ccast = [squeeze(d.nLW(:,5,1)); squeeze(d.nMW(:,5,1)); squeeze(d.nSW(:,5,1))];
+nedn_ccast = [squeeze(d.nLW(:,5,1));squeeze(d.nMW(:,5,1));squeeze(d.nSW(:,5,1))];
 freq_ccast = [d.vLW; d.vMW; d.vSW];
 clear d
 
@@ -37,7 +38,8 @@ for i = 1 : nset
 
   % IASI to CrIS translation
   opt1 = struct;
-  opt1.resmode = 'hires2';
+  opt1.hapod = 0;
+  opt1.user_res = 'hires';
   [r_cris, freq_cris] = iasi2cris(r_iasi, freq_iasi, opt1);
   r_cris = real(r_cris);
 

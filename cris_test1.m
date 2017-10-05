@@ -24,7 +24,7 @@ hapod = 0;
 % opts for inst_params and iasi2cris
 opt1 = struct;
 opt1.hapod = hapod;
-opt1.resmode = 'hires2';
+opt1.user_res = 'hires';
 
 % kcarta test data
 kcdir = '/home/motteler/cris/sergio/JUNK2012/';
@@ -93,7 +93,7 @@ legend('true IASI', 'true CrIS', 'IASI CrIS', ...
 xlabel('wavenumber'); ylabel('brighness temp')
 title(sprintf('IASI and CrIS %s profile %d', band, j));
 grid on; zoom on
-% saveas(gcf, sprintf('iasi_cris_spec_%s', band), 'png')
+% saveas(gcf, sprintf('iasi_cris_spec_%s', band), 'fig')
 
 % IASI CrIS minus true CrIS mean
 figure(2); clf
@@ -112,5 +112,5 @@ ax = axis; ax(1)=pv1; ax(2)=pv2; axis(ax);
 xlabel('wavenumber'); ylabel('dBT')
 title(sprintf('IASI CrIS minus true CrIS %s std', band));
 grid on; zoom on
-% saveas(gcf, sprintf('iasi_cris_diff_%s', band), 'png')
+% saveas(gcf, sprintf('iasi_cris_diff_%s', band), 'fig')
 

@@ -20,7 +20,7 @@ clear d1
 opt1 = struct;
 opt1.hapod = 0;     
 opt1.nguard = 0;
-opt1.resmode = 'hires2';
+opt1.user_res = 'hires';
 
 % do the translation
 tic
@@ -45,17 +45,17 @@ figure(1); clf
 plot(ifrq1, ibt1(:,iobs), cfrq1, cbt1(:,iobs))
 title(sprintf('IASI and IASI CrIS, obs %d', iobs))
 legend('IASI', 'IASI CrIS', 'location', 'north')
-xlabel('wavenumber')
-ylabel('brightness temp')
+xlabel('wavenumber (cm-1)')
+ylabel('BT (K)')
 grid on; zoom on
 
 % IASI to CrIS with and without guard chans
 figure(2); clf
 plot(cfrq2, cbt2(:,iobs), 'r', cfrq1, cbt1(:,iobs), 'g')
 title(sprintf('IASI CrIS with guard chans, obs %d', iobs))
-legend('guard chans', 'no guard cnans', 'location', 'south')
-xlabel('wavenumber')
-ylabel('brightness temp')
+legend('guard chans', 'no guard chans', 'location', 'south')
+xlabel('wavenumber (cm-1)')
+ylabel('BT (K)')
 grid on; zoom on
 
 

@@ -11,9 +11,9 @@
 %   opt1   - optional input parameters
 %
 % opt1 fields
-%   user_res  - 'lowres' (default), 'hires'
 %   hapod     - 0 = no apod (default), 1 = Hamming
 %   nguard    - number of guard channels, default is 0
+%   user_res  - 'lowres' (default), 'midres', 'hires'
 %
 % OUTPUTS
 %   crad   - simulated CrIS radiances, n x k array
